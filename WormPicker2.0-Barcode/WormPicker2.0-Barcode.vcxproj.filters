@@ -18,6 +18,9 @@
     <ClCompile Include="barcodeProcessor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="WormPicker2.0-Barcode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="barcodeProcessor.h">

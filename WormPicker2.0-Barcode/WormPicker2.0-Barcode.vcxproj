@@ -136,6 +136,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="barcodeProcessor.cpp" />
+    <ClCompile Include="WormPicker2.0-Barcode.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="barcodeProcessor.h" />
