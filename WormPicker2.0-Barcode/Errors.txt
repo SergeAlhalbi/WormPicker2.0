@@ -1,0 +1,8 @@
+Fixed Errors:
+
+Error 1:
+* WormPicker2.0-Barcode.exe - System Error
+The code execution cannot proceed because opencv_world4100.dll was not found. Reinstalling the program may fix this problem.
+Solution:
+Add the directory where opencv_world4100.dll is located to the system PATH: C:\Work\Libraries\opencv\build\x64\vc16\bin
+(Alternatively, place the opencv_world4100.dll file in the same directory as the executable.)
