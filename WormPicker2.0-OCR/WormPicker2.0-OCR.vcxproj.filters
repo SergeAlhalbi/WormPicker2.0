@@ -18,5 +18,8 @@
     <ClCompile Include="WormPicker2.0-OCR.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="digitsPaperPrint.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
