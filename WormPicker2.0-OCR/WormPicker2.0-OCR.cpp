@@ -2,6 +2,7 @@
 #include "OCRProcessor.h"
 
 #include <iostream>
+#include <filesystem>
 
 int main() {
     // Display images throught processing
@@ -20,6 +21,7 @@ int main() {
     // Input and output paths
     std::string inputPath = "C:/Work/Projects/WormPicker2.0/WormPicker2.0-OCR/Images/Raw/" + imageName;
     std::string outputPath = "C:/Work/Projects/WormPicker2.0/WormPicker2.0-OCR/Images/Processed/proc-" + imageName;
+    std::filesystem::create_directories(std::filesystem::path(outputPath).parent_path());
 
     // Process the image
     processor.processImage(inputPath, outputPath, showImages);
@@ -41,6 +43,7 @@ int main() {
 
     // Load the image and perform OCR
     std::string imagePath = "C:/Work/Projects/WormPicker2.0/WormPicker2.0-OCR/Images/Processed/proc-" + imageName;
+    std::filesystem::create_directories(std::filesystem::path(imagePath).parent_path());
     std::string result = ocrProcessor.performOCR(imagePath);
 
     if (result != "Error") {
