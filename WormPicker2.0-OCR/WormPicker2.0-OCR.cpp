@@ -1,30 +1,64 @@
 #include "ImageProcessor.h"
 #include "OCRProcessor.h"
 
-#include <iostream>
+#include <pybind11/embed.h>
 #include <filesystem>
-#include <cstdlib>
-#include <vector>
-#include <string>
+
+namespace py = pybind11;
 
 int main() {
-    std::vector<std::string> modelOptions = {"EasyOCR", "TesseractOCR"};
-    std::string model = modelOptions[0];
+    // Available models
+    std::vector<std::string> modelOptions = {"EasyOCR" , "TesseractOCR"};
+    std::string model = modelOptions[1];
 
     if (model == "EasyOCR") {
-        // Call a Python script from C++
-        std::string command = "python C:\\Work\\Projects\\WormPicker2.0\\WormPicker2.0-EasyOCR\\Code\\WormPicker2.0-EasyOCR.py";
-        int result = std::system(command.c_str());
+        // Set environment variables for Python interpreter
+        _putenv("PYTHONHOME=C:\\Users\\serge\\anaconda3");
+        _putenv("PYTHONPATH=C:\\Work\\Projects\\WormPicker2.0\\WormPicker2.0-EasyOCR\\Code");
 
-        if (result == 0) {
+        py::scoped_interpreter guard{}; // Start the Python interpreter
+
+        // Define the image name and paths for input and output
+        bool display_result = true;
+        std::string image_name = "11466.jpg"; // Image file name
+        std::string input_path = "C:/Work/Projects/WormPicker2.0/WormPicker2.0-EasyOCR/Images/Raw/" + image_name;
+        std::string output_path = "C:/Work/Projects/WormPicker2.0/WormPicker2.0-EasyOCR/Images/Result/res-" + image_name;
+
+        try {
+            // Import the "easyOCR" module from the "Packages" folder
+            py::module_ EasyOCRModule = py::module_::import("Packages.easyOCR");
+
+            // Access the EasyOCRProcessor class from the module
+            py::object EasyOCRProcessor = EasyOCRModule.attr("EasyOCRProcessor");
+
+            // Create an instance of EasyOCRProcessor
+            py::object EasyOCR = EasyOCRProcessor(); // Call the constructor
+
+            // Call the `perform_ocr` method and store the result (which is a Python list, or use auto)
+            py::list results = EasyOCR.attr("perform_ocr")(input_path, output_path, display_result);
+
+            // Iterate over the results and print them
+            std::cout << "\nEasyOCR Results:" << std::endl;
+            for (const auto& result : results) {
+                // Each result is a tuple (box, text, confidence)
+                py::tuple detection = result.cast<py::tuple>(); // Cast to a tuple
+
+                py::list box = detection[0].cast<py::list>();
+                std::string text = detection[1].cast<std::string>();
+                double confidence = detection[2].cast<double>();
+
+                // Print the results
+                std::cout << "Text: " << text << ", Confidence: " << confidence << std::endl;
+            }
+            
             std::cout << "OCR completed successfully!" << std::endl;
         }
-        else {
-            std::cerr << "Error calling the Python script!" << std::endl;
+        catch (const py::error_already_set& e) {
+            std::cerr << "Error calling the Python function: " << e.what() << std::endl;
+            return 1;
         }
 
         return 0;
-
     }
     else if (model == "TesseractOCR") {
         // Display images throught processing
@@ -86,5 +120,7 @@ int main() {
 
         return 0;
     }
-    
+
+    std::cerr << "Model not supported!" << std::endl;
+    return -1;
 }
